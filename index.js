@@ -175,7 +175,7 @@ SOFTWARE.
                     .filter(function(entry) {
                         return entry <= rawScore;
                     })
-                    .length / this._population.length() * 100,
+                    .length / this._population.length * 100,
 
                     1
                 );
