@@ -175,10 +175,8 @@ SOFTWARE.
                     .filter(function(entry) {
                         return entry <= rawScore;
                     })
-                    .length / this._population.length * 100,
-
-                    1
-                );
+                    .length / this._population.length * 1000
+                ) / 10;
             }
         } else {
             throw new TypeError('rawScore must be a number');
