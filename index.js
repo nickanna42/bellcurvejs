@@ -173,10 +173,12 @@ SOFTWARE.
                 return Math.round(
                     this._population
                     .filter(function(entry) {
-                        return entry > rawScore;
+                        return entry <= rawScore;
                     })
-                    .length / this._population.length * 1000
-                ) / 10;
+                    .length / this._population.length() * 100,
+
+                    1
+                );
             }
         } else {
             throw new TypeError('rawScore must be a number');
