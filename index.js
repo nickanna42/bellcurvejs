@@ -35,37 +35,22 @@ SOFTWARE.
                     throw new TypeError('All constructor params must be numbers');
                 }
             } else if (arguments.length == 3) {
-                if (typeof arguments[0] == 'number' && typeof arguments[1] == 'number' && typeof arguments[2] == 'number') {
-                    if (arguments[2] > 0) {
-                        if (arguments[2]%1 == 0) {
-                            this._population = [];
-                            if (arguments[2]%2 == 0) {
-                                for (var i = 0; i < arguments[2]; i++) {
-                                    if (i % 2 == 0) {
-                                        this._population.push(arguments[0] + arguments[1]);
-                                    } else {
-                                        this._population.push(arguments[0] - arguments[1]);
-                                    }
-                                }
-                            } else {
-                                this._population.push(arguments[0]);
-                                for (var i = 0; i < arguments[2] - 1; i++) {
-                                    if (i % 2 == 0) {
-                                        this._population.push(arguments[0] + arguments[1]);
-                                    } else {
-                                        this._population.push(arguments[0] - arguments[1]);
-                                    }
-                                }
-                            }
-
-                        } else {
-                            throw new RangeError('N must be an integer');
+                center, stddev, N
+                var center = arguments[0];
+                var stddev = arguments[1];
+                var N = arguments[2];
+                if (typeof center == 'number' && typeof stddev == 'number' && typeof N == 'number') {
+                    if (N%1 == 0 && N > 0) {
+                        var holder = [];
+                        for (var i = 0; i < N; i++) {
+                            holder.push(BellCurve.randomNumber(center, stddev));
                         }
+                        return new BellCurve(holder);
                     } else {
-                        throw new RangeError('N must be >= 0');
+                        throw new TypeError('N must be a positive integer');
                     }
                 } else {
-                    throw new TypeError('All constructor params must be numbers');
+                    throw new TypeError('expecting all new BellCurve() params to be numbers');
                 }
             } else if (arguments.length == 1) {
                 if (Array.isArray(arguments[0])) {
@@ -165,6 +150,12 @@ SOFTWARE.
         }
     };
 
+    BellCurve.prototype.rawScore = function(percentileRank) {
+        var localAvg = this.getAvg();
+        var localStdDev = this.getStdDev();
+        return localAvg - BellCurve.inverseErrorFunction(1 - 2 * percentileRank) * Math.SQRT2 * localStdDev
+    };
+
     BellCurve.prototype.actualPercentileRank = function(rawScore) {
         if (typeof rawScore == 'number') {
             if (this._population === null) {
@@ -229,22 +220,6 @@ SOFTWARE.
         return bell;
     };
 
-    BellCurve.randomCurve = function(center, stddev, N) {
-        if (typeof center == 'number' && typeof stddev == 'number' && typeof N == 'number') {
-            if (N%1 == 0 && N > 0) {
-                var holder = [];
-                for (var i = 0; i < N; i++) {
-                    holder.push(BellCurve.randomNumber(center, stddev));
-                }
-                return new BellCurve(holder);
-            } else {
-                throw new TypeError('N must be a positive integer');
-            }
-        } else {
-            throw new TypeError('all randomCurve() params must be numbers');
-        }
-    }
-
     BellCurve.factorial = function(N) {
         if (typeof N == 'number') {
             if (N%1 == 0 && N >= 0) {
@@ -275,6 +250,35 @@ SOFTWARE.
             return output;
         } else {
             throw new TypeError('x must be a number');
+        }
+    };
+
+    BellCurve.inverseErrorFunction = function(x) {
+        if (typeof x == 'number') {
+            if (x > -1 && x < 1) {
+                var output = 0;
+
+                var c = function(k) {
+                    var output = 0;
+                    if (k == 0) {
+                        return 1;
+                    } else {
+                        for (var m = 0; m < k; m++) {
+                            output = output + (c(m) * c(k - 1 - m)) / ((m+1) * (2*m+1));
+                        }
+                        return output;
+                    }
+                };
+
+                for (var k = 0; k < 10; k++) {
+                    output = output + (c(k) * (Math.sqrt(Math.PI) * x / 2)**(2*k + 1) / (2*k + 1));
+                }
+                return output;
+            } else {
+                throw new TypeError('x must in range: -1 < x < 1');
+            }
+        } else {
+            throw new TypeError('x must in range: -1 < x < 1');
         }
     };
 
