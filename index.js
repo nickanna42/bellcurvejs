@@ -24,7 +24,7 @@ SOFTWARE.
 
 */
 (function() {
-    var BellCurve = function() {
+    var BellCurve = function BellCurve() {
         if (this.constructor === BellCurve) {
             if (arguments.length == 2) {
                 if (typeof arguments[0] == 'number' && typeof arguments[1] == 'number') {
@@ -101,6 +101,20 @@ SOFTWARE.
             return undefined;
         } else {
             return Object.assign({}, this._population);
+        }
+    };
+
+    BellCurve.prototype.setPopulation = function(newPopulation) {
+        if (Array.isArray(newPopulation)) {
+            var badEntry = false;
+            for (var i = 0; i < newPopulation.length; i++) {
+                if (typeof newPopulation[i] != 'number') {
+                    badEntry = true;
+                }
+            }
+            if (!badEntry) {
+                this._population = newPopulation;
+            }
         }
     };
 
