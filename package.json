@@ -1,6 +1,6 @@
 {
   "name": "bellcurvejs",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A class which produces instances that represent a specified Normal Curve",
   "main": "index.js",
   "scripts": {
