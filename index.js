@@ -167,9 +167,10 @@ SOFTWARE.
     };
 
     BellCurve.prototype.rawScore = function(percentileRank) {
+        percentileRank = percentileRank / 100;
         var localAvg = this.getAvg();
         var localStdDev = this.getStdDev();
-        return localAvg - BellCurve.inverseErrorFunction(1 - 2 * percentileRank) * Math.SQRT2 * localStdDev
+        return Math.floor(localAvg - BellCurve.inverseErrorFunction(1 - 2 * percentileRank) * Math.SQRT2 * localStdDev);
     };
 
     BellCurve.prototype.actualPercentileRank = function(rawScore) {
