@@ -100,7 +100,9 @@ SOFTWARE.
         if (this._population === null) {
             return undefined;
         } else {
-            return Object.assign({}, this._population);
+            var output = [];
+            Object.assign(output, this._population);
+            return output;
         }
     };
 
